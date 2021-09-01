@@ -24,3 +24,24 @@ print('\n')
 df4=pd.read_csv(file_path, index_col='c0')
 print(df4)
 print('\n')
+
+
+####################################
+print("####################################################")
+print("###    2-2.  Excel 파일 읽기                         ")
+print("####################################################")
+####################################
+import pandas as pd
+
+
+file_path= './part2/남북한발전전력량.xlsx'
+
+df1=pd.read_excel('part2/남북한발전전력량.xlsx')
+df1=pd.read_excel('./part2/남북한발전전력량.xlsx')
+df2=pd.read_excel('./part2/남북한발전전력량.xlsx', header=None)
+
+print(df1)
+print('\n')
+print(df2)
+print('\n')
+
