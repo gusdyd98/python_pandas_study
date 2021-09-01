@@ -551,7 +551,26 @@ print('\n')
 #######################################################################################
 #######################################################################################
 print("\n#########################################")
-print("\nExample.1-20.시리즈를 숫자로 나누기")
+print("\nExample.1-20.열기준 정렬하기")
+print("\n#########################################\n")
+import pandas as pd
+
+dict_data={'c0':[1,2,3], 'c1':[4,5,6], 'c2':[7,8,9], 'c3':[10,11,12], 'c4':[13,14,15]}
+
+df=pd.DataFrame(dict_data, index=['r0','r1','r2'])
+
+print(df)
+print('\n')
+
+ndf=df.sort_values(by='c1', ascending=False)
+print(ndf)
+print('\n')
+
+
+#######################################################################################
+#######################################################################################
+print("\n#########################################")
+print("\nExample.1-21.시리즈를 숫자로 나누기")
 print("\n#########################################\n")
 import pandas as pd
 
@@ -565,6 +584,149 @@ percentage=student1/200
 print(percentage)
 print('\n')
 print(type(percentage))
+
+
+
+
+#######################################################################################
+#######################################################################################
+print("\n#########################################")
+print("\nExample.1-22.시리즈 사칙연산")
+print("\n#########################################\n")
+import pandas as pd
+
+student1=pd.Series({'국어':100, '영어':80, '수학':90})
+student2=pd.Series({'수학':80, '국어':90, '영어':80})
+
+print(student1)
+print('\n')
+print(student2)
+print('\n')
+
+addition=student1 + student2
+subtraction=student1 - student2
+multiplication=student1 * student2
+division=student1 / student2
+
+print(type(division))
+print('\n')
+
+result=pd.DataFrame([addition, subtraction, multiplication, division],
+                    index=['덧셈', '뺄셈', '곱셈', '나눗셈'])
+
+print(result)
+print('\n')
+
+
+#######################################################################################
+print("\n#########################################")
+print("\nExample.1-23.NaN 값이 있는 시리즈 연산")
+print("\n#########################################\n")
+#######################################################################################
+import pandas as pd
+import numpy as np
+
+student1=pd.Series({'국어':np.nan, '영어':80, '수학':90})
+student2=pd.Series({'수학':80, '국어':90})
+
+print(student1)
+print('\n')
+print(student2)
+print('\n')
+
+addition=student1 + student2
+subtraction=student1 - student2
+multiplication=student1 * student2
+division=student1 / student2
+
+print(type(division))
+print('\n')
+
+result=pd.DataFrame([addition, subtraction, multiplication, division],
+                    index=['덧셈', '뺄셈', '곱셈', '나눗셈'])
+
+print(result)
+print('\n')
+
+
+#######################################################################################
+print("\n############################################")
+print("\nExample.1-24.연산 메소드 사용하여 시리즈 연산하기")
+print("\n############################################\n")
+#######################################################################################
+import pandas as pd
+import numpy as np
+
+student1=pd.Series({'국어':np.nan, '영어':80, '수학':90})
+student2=pd.Series({'수학':80, '국어':90})
+
+print(student1)
+print('\n')
+print(student2)
+print('\n')
+
+sr_add = student1.add(student2, fill_value=0)
+sr_sub = student1.sub(student2, fill_value=0)
+sr_mul = student1.mul(student2, fill_value=0)
+sr_div = student1.div(student2, fill_value=0)
+
+result=pd.DataFrame([sr_add, sr_sub, sr_mul, sr_div],
+                    index=['덧셈', '뺄셈', '곱셈', '나눗셈'])
+
+print(result)
+print('\n')
+
+
+#######################################################################################
+print("############################################")
+print("Example.1-25.데이터프레임에 숫자 더하기")
+print("############################################\n")
+#######################################################################################
+import pandas as pd
+import seaborn as sns
+
+titanic=sns.load_dataset('titanic')
+df=titanic.loc[:, ['age','fare']]
+
+print(df.head())
+print('\n')
+print(type(df))
+print('\n')
+
+addition=df+10
+print(addition.head())
+print('\n')
+print(type(addition))
+
+
+#######################################################################################
+print("############################################")
+print("Example.1-26.데이터프레임끼리 더하기")
+print("############################################\n")
+#######################################################################################
+import pandas as pd
+import seaborn as sns
+
+titanic=sns.load_dataset('titanic')
+df=titanic.loc[:, ['age','fare']]
+
+print(df.tail())
+print('\n')
+print(type(df))
+print('\n')
+
+addition=df+10
+print(addition.tail())
+print('\n')
+print(type(addition))
+print('\n')
+
+subtraction=addition - df
+print(subtraction.tail())
+print('\n')
+print(type(subtraction))
+
+
 
 
 
