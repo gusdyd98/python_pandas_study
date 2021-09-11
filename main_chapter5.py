@@ -574,7 +574,7 @@ df_ymd_range=df['2018-06-20':'2018-06-25']
 print(df_ymd_range)
 
 
-todat=pd.to_datetime('2018-12-25')
+today=pd.to_datetime('2018-12-25')
 df['time_delta']=today-df.index
 df.set_index('time_delta', inplace=True)
 df_180=df['180 days':'189 days']
