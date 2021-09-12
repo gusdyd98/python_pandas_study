@@ -287,3 +287,294 @@ result7=pd.concat([sr1, sr3], axis=0)
 print(result7, '\n')
 
 
+
+print('##############################################')
+print('## 예제 6-12. 데이터프레임 합치기      ')
+print('##############################################')
+
+import pandas as pd
+
+pd.set_option('display.max_columns', 10)
+pd.set_option('display.max_colwidth', 20)
+pd.set_option('display.unicode.east_asian_width', True)
+
+df1=pd.read_excel('./part6/stock price.xlsx')
+df2=pd.read_excel('./part6/stock valuation.xlsx')
+
+print(df1, '\n')
+print(df2, '\n')
+
+merge_inner=pd.merge(df1, df2)
+print(merge_inner)
+
+merge_outer=pd.merge(df1, df2, how='outer', on='id')
+print(merge_outer)
+
+merge_left=pd.merge(df1, df2, how='left', left_on='stock_name', right_on='name')
+print(merge_left)
+
+merge_right=pd.merge(df1, df2, how='right', left_on='stock_name', right_on='name')
+print(merge_right)
+
+price=df1[df1['price']<50000]
+print(price.head())
+print('\n')
+
+value=pd.merge(price, df2)
+print(value)
+
+print('##############################################')
+print('## 예제 6-13. 데이터프레임 합치기(join)      ')
+print('##############################################')
+
+import pandas as pd
+
+pd.set_option('display.max_columns', 10)
+pd.set_option('display.max_colwidth', 20)
+pd.set_option('display.unicode.east_asian_width', True)
+
+df1=pd.read_excel('./part6/stock price.xlsx', index_col='id')
+df2=pd.read_excel('./part6/stock valuation.xlsx', index_col='id')
+
+df3=df1.join(df2)
+print(df1, '\n')
+print('\n')
+print(df2, '\n')
+print('\n')
+print(df3, '\n')
+
+
+df4=df1.join(df2, how='inner')
+print(df4, '\n')
+
+print('##############################################')
+print('## 예제 6-14. 그룹연산 - 분할하기           ')
+print('##############################################')
+
+import pandas as pd
+import seaborn as sns
+
+titanic=sns.load_dataset('titanic')
+df=titanic.loc[:, ['age','sex','class','fare','survived']]
+
+print('승객 수: ', len(df))
+print(df.head())
+print('\n')
+
+grouped=df.groupby(['class'])
+print(grouped)
+
+for key, group in grouped:
+    print('* key :', key)
+    print('* number : ', len(group))
+    print(group.head())
+    print('\n')
+
+average=grouped.mean()
+print(average)
+
+group3=grouped.get_group('Third')
+print(group3.head())
+
+grouped_two=df.groupby(['class', 'sex'])
+
+
+for key, group in grouped_two:
+    print('* key :', key)
+    print('* number : ', len(group))
+    print(group.head())
+    print('\n')
+
+average_two=grouped_two.mean()
+print(average_two)
+print('\n')
+print(type(average_two))
+
+group3f=grouped_two.get_group(('Third', 'female'))
+print(group3f.head())
+
+
+print('##############################################')
+print('## 예제 6-15. 그룹연산 - 데이터 집계           ')
+print('##############################################')
+
+import pandas as pd
+import seaborn as sns
+
+titanic=sns.load_dataset('titanic')
+df=titanic.loc[:, ['age','sex','class','fare','survived']]
+
+grouped=df.groupby(['class'])
+std_all=grouped.std()
+print(std_all)
+print('\n')
+
+std_fare=grouped.fare.std()
+print(std_fare)
+print('\n')
+print(type(std_fare))
+
+
+def min_max(x):
+    return x.max() - x.min()
+
+agg_minmax=grouped.agg(min_max)
+print(agg_minmax.head())
+
+agg_all=grouped.agg(['min', 'max'])
+print(agg_all.head())
+print('\n')
+
+agg_sep=grouped.agg({'fare':['min','max'], 'age':'mean'})
+print(agg_sep.head())
+
+
+print('##############################################')
+print('## 예제 6-16. 그룹연산 - 데이터 변환           ')
+print('##############################################')
+
+age_mean=grouped.age.mean()
+print(age_mean)
+print('\n')
+
+age_std=grouped.age.std()
+print(age_std)
+print('\n')
+
+for key, group in grouped.age:
+    group_zscore=(group-age_mean.loc[key])/age_std.loc[key]
+    print('* origin :', key)
+    print(group_zscore.head(3))
+    print('\n')
+
+def z_score(x):
+    return (x-x.mean())/x.std()
+
+age_zscore=grouped.age.transform(z_score)
+print(age_zscore.loc[[1,9,0]])
+print('\n')
+print(len(age_zscore))
+print('\n')
+print(age_zscore.loc[0:9])
+print('\n')
+print(type(age_zscore))
+
+
+
+print('##############################################')
+print('## 예제 6-17. 그룹연산 - 객체 필터링        ')
+print('##############################################')
+
+grouped_filter=grouped.filter(lambda x: len(x) >= 200)
+print(grouped_filter.head())
+print('\n')
+print(type(grouped_filter))
+
+age_filter=grouped.filter(lambda x: x.age.mean() < 30)
+print(age_filter.tail())
+print('\n')
+print(type(age_filter))
+
+print('##############################################')
+print('## 예제 6-18. 그룹 객체에 함수 매핑하기       ')
+print('##############################################')
+
+agg_grouped=grouped.apply(lambda x: x.describe())
+print(agg_grouped)
+
+
+def z_score(x):
+    return (x-x.mean())/x.std()
+
+age_zscore=grouped.age.apply(z_score)
+print(age_zscore.head())
+
+age_filter=grouped.apply(lambda x: x.age.mean() < 30)
+print(age_filter)
+print('\n')
+for x in age_filter.index:
+    if age_filter[x]==True:
+        age_filter_df=grouped.get_group(x)
+        print(age_filter_df.head())
+        print('\n')
+
+
+print('##############################################')
+print('## 예제 6-19. 멀티 인덱스              ')
+print('##############################################')
+
+grouped=df.groupby(['class','sex'])
+
+gdf=grouped.mean()
+print(gdf)
+print('\n')
+print(type(df))
+
+print(gdf.loc['First'])
+
+print(gdf.loc[('First','female')])
+
+print(gdf.xs('male', level='sex'))
+
+
+
+print('##############################################')
+print('## 예제 6-20. 피벗테이블          ')
+print('##############################################')
+
+import pandas as pd
+import seaborn as sns
+
+pd.set_option('display.max_columns', 10)
+pd.set_option('display.max_colwidth', 20)
+
+titanic=sns.load_dataset('titanic')
+df=titanic.loc[:, ['age', 'sex', 'class', 'fare', 'survived']]
+print(df.head())
+print('\n')
+
+pdf1=pd.pivot_table(df,
+                    index='class',
+                    columns='sex',
+                    values='age',
+                    aggfunc='mean')
+print(pdf1.head())
+
+
+pdf2=pd.pivot_table(df,
+                    index='class',
+                    columns='sex',
+                    values='survived',
+                    aggfunc=['mean','sum'])
+print(pdf2.head())
+
+
+pdf3=pd.pivot_table(df,
+                    index=['class','sex'],
+                    columns='survived',
+                    values=['age', 'fare'],
+                    aggfunc=['mean','max'])
+print(pdf3.head())
+
+print(pdf3.index)
+print(pdf3.columns)
+
+print(pdf3.xs('First'))
+
+print(pdf3.xs(('First', 'female')))
+
+print(pdf3.xs('male', level='sex'))
+
+print(pdf3.xs(('Second', 'male'), level=[0, 'sex']))
+
+print(pdf3.xs('mean', axis=1))
+
+print(pdf3.xs(('mean', 'age'), axis=1))
+
+print(pdf3.xs(1, level='survived', axis=1))
+
+print(pdf3.xs(('max', 'fare', 0),
+              level=[0,1,2], axis=1))
+
+
+
