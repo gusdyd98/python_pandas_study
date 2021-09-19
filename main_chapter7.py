@@ -544,4 +544,40 @@ for name, lat, lng in zip(df.학교명, df.위도, df.경도):
 
     mschool_map.save('./seoul_mschool_location.html')
 
+from sklearn import preprocessing
+
+label_encoder=preprocessing.LabelEncoder()
+onehot_encoder=preprocessing.OneHotEncoder()
+
+onehot_location=label_encoder.fit_transform(df['지역'])
+onehot_code=label_encoder.fit_transform(df['코드'])
+onehot_type=label_encoder.fit_transform(df['유형'])
+onehot_day=label_encoder.fit_transform(df['주야'])
+
+
+df['location']=onehot_location
+df['code']=onehot_code
+df['type']=onehot_type
+df['day']=onehot_day
+
+print(df.head())
+
+from sklearn import cluster
+
+columns_list=[9,10,13]
+X=df.iloc[:, columns_list]
+print(X[:5])
+print('\n')
+
+X=preprocessing.StandardScaler().fit(X).transform(X)
+
+dbm=cluster.DBSCAN(eps=0.2, min_samples=5)
+
+dbm.fit(X)
+
+cluster_label=dbm.labels_
+print(cluster_label)
+print('\n')
+
+
 
